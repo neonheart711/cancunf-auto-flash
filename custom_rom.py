@@ -1,15 +1,29 @@
 import subprocess
-import platform
 
 
-def custom_rom():
+def check_adb_installed():
+    try:
+        result = subprocess.run(
+            ["adb", "--version"], capture_output=True, text=True, check=False
+        )
+    except FileNotFoundError:
+        print("ADB is not installed or not available on PATH.")
+        return False
 
-    current_os = platform.system()
-    
-    if current_os == "Windows":
-        # Windows requires shell=True for built-in shell commands like 'dir'
-        result = subprocess.run(["dir"], shell=True, capture_output=True, text=True)
-    elif current_os in ["Linux", "Darwin"]:  # Darwin is macOS
-        result = subprocess.run(["ls", "-l"], capture_output=True, text=True)
+    if result.returncode != 0:
+        print("ADB was found, but could not be run.")
+        return False
 
-    print(result.stdout)
+    print(f"ADB is installed: {result.stdout.strip()}")
+    return True
+
+
+def custom_rom_linux():
+    check_adb_installed()
+
+
+def custom_rom_windows():
+    check_adb_installed()
+
+
+custom_rom_linux()
