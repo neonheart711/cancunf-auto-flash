@@ -40,15 +40,9 @@ jobs:
 
       - name: Build Standalone Executable (Windows)
         if: runner.os == 'Windows'
+        shell: pwsh
         run: |
-          pyinstaller --noconfirm --onefile --clean ^
-            --name "cancunf-toolkit-windows.exe" ^
-            --hidden-import=gui_app ^
-            --hidden-import=custom_rom_flash ^
-            --hidden-import=colorama ^
-            --hidden-import=tkinter ^
-            --add-data "windows-adb-install.bat;." ^
-            app.py
+          pyinstaller --noconfirm --onefile --clean --name "cancunf-toolkit-windows.exe" --hidden-import=gui_app --hidden-import=custom_rom_flash --hidden-import=colorama --hidden-import=tkinter --add-data "windows-adb-install.bat;." app.py
 
       - name: Build Standalone Executable (Linux & macOS)
         if: runner.os != 'Windows'
@@ -67,3 +61,4 @@ jobs:
         with:
           name: ${{ matrix.artifact_name }}
           path: dist/${{ matrix.artifact_name }}*
+          
