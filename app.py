@@ -4,7 +4,7 @@ import sys
 import platform
 import subprocess
 
-# Enable native ANSI colors on Windows CMD/PowerShell without requiring colorama
+# Enable native ANSI colors on Windows CMD/PowerShell
 if os.name == "nt":
     os.system("")
 
@@ -21,7 +21,6 @@ try:
     bold = Style.BRIGHT
     style_reset = Style.RESET_ALL
 except ImportError:
-    # Zero-dependency ANSI fallback if colorama is not installed
     red = "\033[0;31m"
     green = "\033[0;32m"
     cyan = "\033[0;36m"
@@ -33,6 +32,7 @@ except ImportError:
     style_reset = "\033[0m"
 
 from custom_rom_flash import (
+    get_resource_dir,
     custom_rom_flash_cancunf,
     dirty_flash_update_cancunf,
     stock_rom_flash_cancunf,
@@ -97,7 +97,7 @@ def select_os():
 
 
 def adb_fastboot_setup(current_os):
-    script_dir = os.path.dirname(os.path.abspath(__file__))
+    script_dir = get_resource_dir()
 
     if current_os == "1":
         bat_path = os.path.join(script_dir, "windows-adb-install.bat")
@@ -143,7 +143,7 @@ def run_cli_loop():
         print(f"{green}[{red}1{green}]{style_reset}. Clean Flash Custom ROM (FastbootD + ADB Sideload)")
         print(f"{green}[{red}2{green}]{style_reset}. Update Custom ROM Build (Dirty Flash / Sideload)")
         print(f"{green}[{red}3{green}]{style_reset}. Full Clean Flash Stock ROM (Both Slot A & Slot B)")
-        print(f"{green}[{red}4{green}]{style_reset}. Root Your Phone (Flash Patched Boot / Init_boot)")
+        print(f"{green}[{red}4{green}]{style_reset}. Root Your Phone (Flash Patched Boot / Init_boot / Vendor_boot)")
         print(f"{green}[{red}5{green}]{style_reset}. Setup / Verify ADB & Fastboot Platform Tools")
         print(f"{green}[{red}6{green}]{style_reset}. Exit")
 
@@ -168,7 +168,6 @@ def run_cli_loop():
 
 
 def main():
-    # Support direct command-line flags (--cli or --gui)
     if "--cli" in sys.argv or is_termux():
         run_cli_loop()
         return
@@ -189,6 +188,7 @@ def main():
 
     if mode == "1":
         try:
+            # Direct import & call prevents PyInstaller .exe infinite recursion bug
             from gui_app import launch_gui
             print(f"{yellow}[*] Launching Graphical User Interface...{style_reset}")
             launch_gui()
