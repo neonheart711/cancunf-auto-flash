@@ -95,29 +95,6 @@ python app.py --cli
 
 ---
 
-### Method 2: Build Standalone Executables (Run WITHOUT Python Installed!)
-You can package the entire toolkit into a single standalone executable for **Windows (`.exe`)**, **Linux**, or **macOS** using `PyInstaller` so end-users do not need Python installed:
-
-#### 🪟 On Windows (Creates `cancunf-toolkit.exe`):
-```cmd
-pip install pyinstaller
-pyinstaller --onefile --name "cancunf-toolkit" --add-data "windows-adb-install.bat;." app.py
-```
-
-#### 🐧 On Linux (Creates `cancunf-toolkit-linux` binary):
-```bash
-pip install pyinstaller
-pyinstaller --onefile --name "cancunf-toolkit-linux" --add-data "linux-adb-install.sh:." app.py
-```
-
-#### 🍎 On macOS (Creates `cancunf-toolkit-mac` binary):
-```bash
-pip install pyinstaller
-pyinstaller --onefile --name "cancunf-toolkit-mac" --add-data "mac-adb-install.sh:." app.py
-```
-*(The compiled standalone executable will be generated inside the `dist/` folder!)*
-
----
 
 ## 🙏 Credits & Acknowledgments
 
