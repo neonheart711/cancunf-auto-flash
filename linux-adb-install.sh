@@ -31,11 +31,11 @@ run_priv() {
 if [ -n "$TERMUX_VERSION" ] || [ -d "/data/data/com.termux/files/usr" ]; then
     echo -e "${YELLOW}[*] System Detected: Termux (Android - Non-Root Method)${RESET}"
     echo -e "${REDB}[${RESET}1${REDB}] ${GREENB}Environment is being set up; please wait...${RESET}\n"
-    sleep 4
+    sleep 2
 
     apt update -y
     apt upgrade -y
-    termux-setup-storage -y
+    termux-setup-storage || true
     apt install curl -y
     apt install termux-api -y
     curl -s https://raw.githubusercontent.com/nohajc/termux-adb/master/install.sh | bash
