@@ -3,107 +3,156 @@
 ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS%20%7C%20Termux-00f0ff?style=for-the-badge)
 ![Python](https://img.shields.io/badge/Python-3.7%2B%20(Zero%20Extra%20Pip%20Deps)-10b981?style=for-the-badge)
 ![Device](https://img.shields.io/badge/Device-Moto%20G54%20%2F%20G64%205G%20(cancunf)-f43f5e?style=for-the-badge)
+![Safety](https://img.shields.io/badge/Safety-September%20ARB%20Protection-f59e0b?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-a855f7?style=for-the-badge)
 
-A complete, cross-platform flashing and rooting suite built exclusively for the **Motorola Moto G54 5G** and **Motorola Moto G64 5G** (codename: **`cancunf`**). It features both a modern **Cyberpunk Studio Graphical User Interface (GUI)** and an interactive **Command Line Interface (CLI)**, running natively on **Windows (7/8/10/11)**, **Linux**, **macOS**, and **Android Termux** with **zero external Python package requirements**.
+A complete, cross-platform flashing, updating, and rooting studio built exclusively for the **Motorola Moto G54 5G** and **Motorola Moto G64 5G** (codename: **`cancunf`**). It features both a modern **Curved Dark Glassmorphism GUI Studio** and an interactive **Command Line Interface (CLI)**, running natively on **Windows (7/8/10/11 — 64-bit)**, **Linux**, **macOS**, and **Android Termux**.
 
 ---
 
-## ⚠️ IMPORTANT DISCLAIMER & SAFETY WARNING
+## 🚨 CRITICAL WARNING: SEPTEMBER SECURITY UPDATE & ARB (ANTI-ROLLBACK)
 
-> **READ CAREFULLY BEFORE USE:**
-> 1. **Strict Device Exclusivity**: This software is engineered **ONLY** for the **Motorola Moto G54 5G and Moto G64 5G (`cancunf`)**. Do **NOT** attempt to use this tool on any other device model.
-> 2. **No Liability / Use at Your Own Risk**: Flashing Custom ROMs, Stock Firmware, or Root images involves sensitive system-level operations that carry an inherent risk of bricking your device, causing bootloops, voiding your warranty, or erasing personal data.
-> 3. **User Responsibility**: By using this software, you agree that **you are doing so entirely at your own risk**. Neither the developer (`neonheart711`) nor any upstream contributors or guide authors (`CyberKnight777`, `nohajc`, Google, or Motorola) hold any responsibility if your device is damaged, bricked, or rendered unusable. Always back up your personal data and ensure your battery is charged above **50%** before proceeding.
+> **MUST READ BEFORE FLASHING STOCK OR CUSTOM ROMS:**
+> * **Affected Builds**: Motorola's September Security Update (`V1TDS35H.83-20-5-14` for Global and `V1TDS35H.83-20-5-8-2-1-3` for Brazil) **bumps the ARB (Anti-RollBack) counter once more!**
+> 1. **DO NOT DOWNGRADE STOCK FIRMWARE**: If your device has updated to the September patch (or newer), **you CANNOT downgrade to any older Stock Firmware** (such as Android 13 or older Android 14/15 builds). Flashing an older `preloader.img` or `lk.img` on a September+ bootloader will trigger Anti-Rollback protection and **PERMANENTLY HARD BRICK (Dead Boot)** your phone!
+> 2. **CUSTOM ROM BRICK RISK**: If you updated to the September security patch on Stock ROM, **do NOT flash A16 or older/incompatible Custom ROMs** — flashing them will lead to a brick! Only flash Custom ROM builds explicitly updated for September+ firmware.
+> * *This toolkit includes built-in live Bootloader & XML firmware version checks in both GUI and CLI modes to warn you before flashing.*
+
+---
+
+## ⚠️ General Disclaimer
+
+1. **Strict Device Exclusivity**: Engineered **ONLY** for the **Motorola Moto G54 5G and Moto G64 5G (`cancunf`)**. Do **NOT** use on any other device.
+2. **Use at Your Own Risk**: Flashing firmware or root images carries inherent risks. Neither the developer (`neonheart711`) nor upstream contributors (`CyberKnight777`, `nohajc`, Google, or Motorola) hold any responsibility for bricked devices or data loss. Always back up your data and keep battery above **50%**.
 
 ---
 
 ## ✨ Key Features
 
-### 🖥️ Dual Interface (CANCUNF Studio GUI + Interactive CLI)
-- **Modern Cyberpunk Dashboard GUI**:
-  - Built using pure Python `tkinter` / `ttk` (`clam` engine) for consistent dark-mode styling across Windows, Linux, and macOS without extra third-party GUI dependencies.
-  - **Sidebar Navigation & Live File Validation**: Instant file/folder verification badges (`✓ Ready` with file size in MB, or `✗ Incomplete/Missing` with exact partition count).
-  - **One-Click Quick Reboot Bar**: Check live device connection status (`Bootloader`, `FastbootD`, or `ADB`) and reboot directly to **Bootloader**, **FastbootD**, **Recovery**, or **System** with a single click.
-  - **Live Terminal Telemetry Console**: Resizable split-pane console with timestamps (`[HH:MM:SS]`), dynamic progress bar (tracks `adb sideload` percentages and `super` sparsechunk counts), **Stop / Abort Task** button, **Copy Log**, and **Save Log (`.txt`)**.
-- **Interactive CLI Mode**:
-  - Fast, color-coded terminal menu interface with built-in ANSI fallback (runs even if `colorama` is not installed).
-  - Automatically activates on **Android Termux** where desktop GUI is unavailable.
+* **🖥️ Modern Curved Glass GUI + Interactive CLI**:
+  * **CANCUNF Studio GUI**: Android 15 / iOS dark glassmorphic interface with smooth rounded cards, pill buttons, live file/folder verification badges, 1-click Quick Reboot bar (`Bootloader`, `FastbootD`, `Recovery`, `System`), progress bar, and live terminal telemetry console.
+  * **CLI Mode**: Color-coded terminal interface that automatically activates on **Android Termux** or when launched with `--cli`.
+* **🛡️ September ARB & Pre-Flight Safety Shield**:
+  * Queries live device bootloader & fingerprint variables (`fastboot getvar all`).
+  * Automatically scans `flashfile.xml` / `servicefile.xml` inside your Stock ROM folder to display the exact target firmware build version before flashing.
+  * Verifies all **21 mandatory partition images** (`PGPT`, `preloader.img`, `lk.img`, etc.) and numerically sorts all `super.img_sparsechunk.*` files (`0` to `21+`) for **Slot A & Slot B**.
+* **🚀 Official Custom ROM Clean & Dirty Flasher**:
+  * Enforces the official `cancunf` FastbootD workflow (`is-userspace: yes` verification ➔ `initial_install.zip` ➔ Recovery Data Wipe ➔ `adb sideload`).
+* **⚡ 1-Click Portable Platform Tools Auto-Downloader**:
+  * Downloads and configures official Google `adb` & `fastboot` directly inside the toolkit folder without requiring Administrator/`sudo` permissions.
 
-### ⚙️ Universal & Portable Platform Tools Setup
-- **⚡ 1-Click Portable Auto-Downloader (GUI)**: Downloads and extracts the latest official Google `platform-tools` (`adb` & `fastboot`) directly into the toolkit folder—no Administrator or `sudo` privileges required.
-- **System Package Manager Scripts**:
-  - **Windows (7/8/10/11)**: Auto-elevates to Administrator, installs via `winget`, `choco`, or `scoop`, or extracts directly from Google's repository to `C:\adb\platform-tools` and updates System `PATH`.
-  - **Linux**: Auto-detects `apt`, `pacman`, `dnf`, `zypper`, `apk`, or `xbps`.
-  - **Android Termux (Non-Root OTG)**: Configures `termux-api` and `termux-adb` / `termux-fastboot` for rootless USB OTG flashing from another Android phone.
-  - **macOS**: Supports `Homebrew`, `MacPorts`, or direct Google Darwin binary setup.
+---
 
-### 🚀 Safe Custom ROM Flasher & Updater
-- **Clean Flash Workflow**: Follows the official `cancunf` flashing instructions:
-  1. Reboots from Bootloader into **FastbootD (Userspace Fastboot)**.
-  2. Strictly polls and verifies `is-userspace: yes` to prevent accidental Bootloader flashing.
-  3. Flashes the `initial_install.zip` (`boot` + `vendor_boot`).
-  4. Reboots to Recovery and prompts for **Wipe data / Factory reset**.
-  5. Verifies `adb devices` in **sideload** mode before executing `adb sideload <rom.zip>`.
-- **Dirty Flash / Second-Slot Sideload**: Easily sideload ROM updates or perform the second-pass sideload required when upgrading from pre-May 2024 (Android 14) stock firmware.
+## 📋 System Requirements & Prerequisites
 
-### 🛠️ Dynamic Full Clean Stock Firmware Flasher (Slot A & Slot B)
-- **Strict Pre-Flight Verification**: Before running a single fastboot command, verifies that all **21 mandatory firmware images** (`PGPT`, `preloader.img`, `lk.img`, `tee.img`, `mcupm.img`, `pi_img.img`, `sspm.img`, `dtbo.img`, `logo.img`, `spmfw.img`, `scp.img`, `vbmeta.img`, `vbmeta_system.img`, `md1img.img`, `dpm.img`, `gz.img`, `vcp.img`, `gpueb.img`, `efuse.img`, `boot.img`, `vendor_boot.img`) are present in the selected folder to prevent partial flashes or bricks.
-- **Dynamic Sparsechunk Sorting**: Automatically detects and numerically sorts all `super.img_sparsechunk.*` files (`0` through `17`, `18`, `21`, or higher) across Android 13, 14, and 15+ stock builds.
-- **Full Dual-Slot Restore**: Clean flashes both **Slot A** and **Slot B**, erases `nvdata`, `userdata`, `metadata`, `debug_token`, and clears OEM fastboot flags.
+### 1. Hardware & Phone Requirements
+* A **Motorola Moto G54 5G** or **Moto G64 5G (`cancunf`)** with an **Unlocked Bootloader**.
+* A good quality USB Data Cable (or a USB OTG adapter if flashing from another Android phone via Termux).
+* **Windows Users Only**: Install [Motorola USB Drivers](https://en-us.support.motorola.com/app/usb-drivers) so your PC detects the phone in Fastboot/Bootloader mode.
 
-### 🔓 Root Helper
-- Flash Magisk, KernelSU, or APatch patched `.img` files directly to **`boot`**, **`init_boot`**, or **`vendor_boot`** partitions.
+### 2. Software Requirements (Only if running from Python Source Code)
+> **Note:** If you download the standalone **`.exe` (Windows)**, **Linux**, or **macOS** binaries from the [Releases](https://github.com/neonheart711/cancunf-auto-flash/releases) page, **you do NOT need Python or Tkinter installed!**
+
+If you want to run the `.py` source files directly, install **Python 3.7+** and **`tkinter`** (for GUI mode):
+
+* **Windows (7/8/10/11)**:
+  * Download and install Python from [python.org](https://www.python.org/downloads/).
+  * During installation, check **"Add python.exe to PATH"** and ensure **"tcl/tk and IDLE"** (Tkinter) is ticked.
+* **Ubuntu / Debian / Kali / Linux Mint**:
+  * Run: `sudo apt update && sudo apt install python3 python3-tk git -y`
+* **Arch Linux / Manjaro**:
+  * Run: `sudo pacman -S python tk git`
+* **Fedora / RHEL**:
+  * Run: `sudo dnf install python3 python3-tkinter git -y`
+* **macOS (via Homebrew)**:
+  * Run: `brew install python python-tk git`
+* **Optional CLI Color Package (All Desktop OS)**:
+  * Run: `pip install colorama`
+
+---
+
+## 📱 Android Termux Requirements (Phone-to-Phone USB OTG Flashing)
+
+To flash your Moto G54/G64 from another Android phone (without root) using a USB OTG cable, install both **Termux** and **Termux:API**:
+
+1. **Download & Install Required Apps**:
+   * 📥 **Termux App (F-Droid / GitHub)**: [Download Termux APK](https://github.com/termux/termux-app/releases/download/v0.118.3/termux-app_v0.118.3+github-debug_universal.apk)
+   * 📥 **Termux:API App (Required for USB OTG permission)**: [Download Termux:API APK](https://github.com/termux/termux-api/releases/download/v0.53.0/termux-api-app_v0.53.0+github.debug.apk) 
+   * *(⚠️ Important: Install both apps from the same source—either both from F-Droid or both from GitHub Releases. Do not mix Play Store and F-Droid builds!)*
+2. **Install Python & Git inside Termux**:
+   * Run: `pkg update && pkg upgrade -y && pkg install python git -y`
+
+---
+
+## 🚀 Installation & Usage Guide
+
+You can use this toolkit in **two ways**: using the **Pre-Built Standalone Executables (`.exe` / Binary)** OR running directly from **Python Source Code**.
+
+### 🏆 Method 1: Run Pre-Built Executables (`.exe` / Binary — No Python Needed!)
+
+1. Go to the **[GitHub Releases Page](https://github.com/neonheart711/cancunf-auto-flash/releases)** and download the file for your operating system:
+   * **Windows (64-bit: Win 7/8/10/11)**: `cancunf-toolkit-windows-x86-64.exe`
+   * **Linux (64-bit: amd64)**: `cancunf-toolkit-linux-amd64`
+   * **macOS**: `cancunf-toolkit-macos`
+
+2. **How to Launch**:
+   * **On Windows (`.exe`)**:
+     * Simply **Double-Click** `cancunf-toolkit-windows-x86-64.exe` to open the selector, OR run from Command Prompt / PowerShell:
+     * Interactive Selector: `cancunf-toolkit-windows-x86-64.exe`
+     * Launch GUI Studio directly: `cancunf-toolkit-windows-x86-64.exe --gui`
+     * Launch CLI Mode directly: `cancunf-toolkit-windows-x86-64.exe --cli`
+   * **On Linux**:
+     * Run: `chmod +x cancunf-toolkit-linux-amd64 && ./cancunf-toolkit-linux-amd64 --gui`
+   * **On macOS**:
+     * Run: `chmod +x cancunf-toolkit-macos && ./cancunf-toolkit-macos --gui`
+
+---
+
+### 🐍 Method 2: Run from Python Source Code (Windows / Linux / macOS / Termux)
+
+1. **Clone the Repository**:
+   * Run: `git clone https://github.com/neonheart711/cancunf-auto-flash.git`
+   * Run: `cd cancunf-auto-flash`
+
+2. **Run the Toolkit**:
+   * **Interactive Mode Selector (Asks GUI or CLI)**: `python app.py`
+   * **Launch GUI Studio Directly (Windows / Linux / macOS)**: `python app.py --gui`
+   * **Launch CLI Mode Directly (Default on Android Termux)**: `python app.py --cli`
+   * *(Note: On Linux/macOS, use `python3` if `python` is not aliased).*
+
+---
+
+## 🛠️ First-Time ADB & Fastboot Setup Inside the Toolkit
+
+* **In GUI Mode**: Click **`5. Setup Platform Tools`** on the left sidebar and click **`⚡ Auto-Download Portable Platform Tools`**. It will automatically download and configure Google's official `adb` and `fastboot` inside the toolkit folder!
+* **In CLI Mode / Termux**: When prompted `Do you want to setup/verify Platform Tools (ADB & Fastboot)? (Y/N):`, type **`Y`** and press Enter. On Termux, it will automatically install `termux-adb` and `termux-fastboot` for rootless USB OTG support.
 
 ---
 
 ## 📂 Project Structure
 
-```text
-cancunf-auto-flash/
-├── app.py                    # Main Launcher (Auto-detects OS/Termux, selects GUI or CLI)
-├── gui_app.py                # CANCUNF Studio Graphical User Interface (Pure Tkinter/TTK)
-├── custom_rom_flash.py       # Core Backend Engine (Custom ROM, Stock ROM, Root & Safety Checks)
-├── linux-adb-install.sh      # Universal Linux & Termux (Rootless OTG) ADB/Fastboot Installer
-├── mac-adb-install.sh        # macOS ADB/Fastboot Installer (Brew, MacPorts, Direct)
-├── windows-adb-install.bat   # Windows 7/8/10/11 ADB/Fastboot Auto-Installer
-├── README.md                 # Project Documentation
-└── LICENSE                   # MIT License
-```
+* `app.py` — Main Entry Launcher (Auto-detects OS/Termux, CLI/GUI router, September ARB alerts)
+* `gui_app.py` — Modern Curved Glassmorphic Studio GUI (`tkinter` Canvas vector engine)
+* `custom_rom_flash.py` — Core Backend Flashing Engine & XML/Bootloader ARB Safety Verifier
+* `build.py` — Standalone PyInstaller Binary Builder Script
+* `windows-adb-install.bat` — Windows 7/8/10/11 Platform Tools Auto-Installer
+* `linux-adb-install.sh` — Universal Linux & Android Termux (`termux-adb`) Installer
+* `mac-adb-install.sh` — macOS Platform Tools Installer
+* `README.md` — Complete Documentation & Usage Guide
+* `LICENSE` — MIT License
 
 ---
-
-## 🚀 How to Run
-
-### Method 1: Run Directly with Python (Zero Extra `pip` Packages Required!)
-The toolkit runs out-of-the-box with standard Python 3 (optional: install `colorama` for enhanced CLI colors on older terminals):
-
-```bash
-# Clone the repository
-git clone [https://github.com/neonheart711/cancunf-auto-flash.git](https://github.com/neonheart711/cancunf-auto-flash.git)
-cd cancunf-auto-flash
-
-# Launch interactive mode selector (Choose GUI or CLI)
-python app.py
-
-# Launch CANCUNF Studio GUI directly
-python app.py --gui
-
-# Launch CLI Mode directly (Default on Android Termux)
-python app.py --cli
-```
-
----
-
 
 ## 🙏 Credits & Acknowledgments
 
-- **[CyberKnight777](https://cyberknight777.dev/instructions/cancunf/)**: Special thanks and credit for the official Motorola Moto G54 / G64 (`cancunf`) Custom ROM installation guide and FastbootD workflow instructions.
-- **[nohajc (`termux-adb`)](https://github.com/nohajc/termux-adb)**: For enabling rootless ADB & Fastboot over USB OTG inside Android Termux.
-- **Google AOSP & Motorola Mobility**: For the official Android SDK Platform Tools (`adb` & `fastboot`) and stock partition flashing sequences.
-- **Developer & Maintainer**: **Aman (`neonheart711`)** — Toolkit architecture, cross-platform installers, CANCUNF Studio GUI, and safety automation.
+* **[CyberKnight777](https://cyberknight777.dev/instructions/cancunf/)**: Official Motorola Moto G54 / G64 (`cancunf`) Custom ROM installation guide, FastbootD workflow, and September ARB community advisories.
+* **[nohajc (`termux-adb`)](https://github.com/nohajc/termux-adb)**: Rootless ADB & Fastboot over USB OTG for Android Termux.
+* **[NonameBlank007](https://github.com/NonameBlank007/Cancunf_Stock_Flash_Guide)**: Stock ROM partition flashing reference for `cancunf`.
+* **Google AOSP & Motorola Mobility**: Official Android SDK Platform Tools and stock firmware structure.
+* **Developer & Maintainer**: **Aman (`neonheart711`)** — Toolkit architecture, cross-platform installers, Modern Glass Studio GUI, and ARB safety automation.
 
 ---
 
 ## 📄 License
+
 This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
