@@ -84,8 +84,7 @@ class GlassCard(tk.Canvas):
         self.coords(self.inner_win, self.pad_x, self.pad_y)
         self.itemconfigure(
             self.inner_win,
-            width=max(w - (self.pad_x * 2), 10),
-            height=max(h - (self.pad_y * 2), 10)
+            width=max(w - (self.pad_x * 2), 10)
         )
 
 
